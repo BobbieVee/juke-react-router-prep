@@ -2,10 +2,10 @@ import React from 'react';
 import { Link} from 'react-router';
 
 const Albums = (props) => {
-  console.log('albums props = ', props)
+  // console.log('albums props = ', props)
 
   const albums = props.albums;
-  const selectAlbum = props.selectAlbum;
+  // const selectAlbum = props.selectAlbum;
 
   return (
     <div>

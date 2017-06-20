@@ -9,7 +9,7 @@ import Album from '../components/Album';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
 
-import { convertAlbum, convertAlbums, skip } from '../utils';
+import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
 
 export default class AppContainer extends Component {
 
@@ -28,7 +28,8 @@ export default class AppContainer extends Component {
   componentDidMount () {
     axios.get('/api/albums/')
       .then(res => res.data)
-      .then(album => this.onLoad(convertAlbums(album)));
+      .then(album => {
+        this.onLoad(convertAlbums(album))});
 
     axios.get('/api/artists/')
       .then(r => r.data)
@@ -103,7 +104,6 @@ export default class AppContainer extends Component {
 
   selectArtist (artistId){
     let artist, albums, songs;
-    console.log('selectArtist called' );
     axios.get(`/api/artists/${artistId}`)
     .then(r => r.data)
     .then(_artist => {
@@ -113,12 +113,15 @@ export default class AppContainer extends Component {
     .then(r => r.data)
     .then(_albums => {
       albums = _albums;
+      this.onLoad(convertAlbums(albums));
       return axios.get(`/api/artists/${artistId}/songs`)
     })
     .then(r => r.data)
     .then(_songs => {
+      let songsPlayable = [];
       songs = _songs;
-      this.setState({ selectedArtist: artist, artistAlbums: albums, artistSongs: songs } );
+      songsPlayable = songs.map((song) => convertSong(song));
+      this.setState({ selectedArtist: artist, artistAlbums: albums, artistSongs: songsPlayable } );
     });
 
   }
